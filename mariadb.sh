@@ -12,4 +12,4 @@ fi
 exec mariadbd --no-defaults --datadir="${data_dir}" \
     --socket=/tmp/oma-mariadb.sock --pid-file=/tmp/oma-mariadb.pid \
     --skip-networking --skip-log-bin --innodb-buffer-pool-size=128M \
-    --max-connections=20 --performance-schema=OFF --log-error=/dev/stderr
+    --max-connections=20 --performance-schema=OFF

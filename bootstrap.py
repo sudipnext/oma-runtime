@@ -87,7 +87,9 @@ if (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https') {
 }
 define('DISALLOW_FILE_EDIT', true);
 $table_prefix = 'wp_';
-define('ABSPATH', __DIR__ . '/');
+if (!defined('ABSPATH')) {
+    define('ABSPATH', __DIR__ . '/');
+}
 require_once ABSPATH . 'wp-settings.php';
 """
         temporary = SITE / "wp-config.php.tmp"

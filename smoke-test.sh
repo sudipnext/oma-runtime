@@ -35,7 +35,8 @@ docker exec "${container}" hermes --version
 wp core verify-checksums
 test "$(wp option get blog_public)" = 0
 # The test site is installed before the HTTP service is exposed.
-docker exec "${container}" curl -fsS http://127.0.0.1:8081/wp-json/ >/dev/null
+docker exec "${container}" curl -fsS http://localhost:8081/wp-json/ \
+    | python3 -c 'import json,sys; assert json.load(sys.stdin)["name"] == "OMA Test Site"'
 test "$(docker exec "${container}" curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8081/wp-config.php)" = 403
 docker exec "${container}" bash -c 'mkdir -p ~/.oma/wordpress/wp-content/uploads; printf "<?php echo 123;" > ~/.oma/wordpress/wp-content/uploads/blocked.php'
 test "$(docker exec "${container}" curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8081/wp-content/uploads/blocked.php)" = 403
@@ -55,6 +56,8 @@ test "$(wp post get "${post_id}" --field=post_title)" = 'OMA persisted post'
 test "$(docker exec "${container}" cat /home/node/.hermes/skills/oma-smoke/SKILL.md)" = persistent-skill
 test "$(docker exec "${container}" sha256sum /home/node/.oma/wordpress-credentials.json)" = "${credentials_before}"
 test "$(docker exec "${container}" stat -c %a /home/node/.oma/wordpress-credentials.json)" = 600
-docker exec "${container}" curl -fsS http://127.0.0.1:8081/oma-persisted-post/ >/dev/null
+wp eval '$c = json_decode(file_get_contents(getenv("HOME") . "/.oma/wordpress-credentials.json"), true); if (!wp_check_password($c["password"], get_user_by("login", $c["username"])->user_pass)) { exit(1); }'
+page="$(docker exec "${container}" curl -fsS http://localhost:8081/oma-persisted-post/)"
+[[ "${page}" == *'OMA persisted post'* ]]
 docker stats --no-stream "${container}"
 echo 'Passed: empty-home boot, gateway, WordPress, access controls, and persistence after recreation.'
