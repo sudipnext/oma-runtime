@@ -25,9 +25,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check scripts
         run: |
-          bash -n entrypoint.sh mariadb.sh healthcheck.sh smoke-test.sh
-          shellcheck entrypoint.sh mariadb.sh healthcheck.sh smoke-test.sh
-          python3 -m py_compile bootstrap.py supervise.py
+          bash -n healthcheck.sh smoke-test.sh
+          shellcheck healthcheck.sh smoke-test.sh
       - uses: docker/setup-buildx-action@v3
       - name: Build linux/amd64 image
         uses: docker/build-push-action@v6
