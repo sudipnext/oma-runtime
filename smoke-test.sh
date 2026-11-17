@@ -56,6 +56,7 @@ test "$(wp post get "${post_id}" --field=post_title)" = 'OMA persisted post'
 test "$(docker exec "${container}" cat /home/node/.hermes/skills/oma-smoke/SKILL.md)" = persistent-skill
 test "$(docker exec "${container}" sha256sum /home/node/.oma/wordpress-credentials.json)" = "${credentials_before}"
 test "$(docker exec "${container}" stat -c %a /home/node/.oma/wordpress-credentials.json)" = 600
+# shellcheck disable=SC2016 # These are PHP variables, not Bash variables.
 wp eval '$c = json_decode(file_get_contents(getenv("HOME") . "/.oma/wordpress-credentials.json"), true); if (!wp_check_password($c["password"], get_user_by("login", $c["username"])->user_pass)) { exit(1); }'
 page="$(docker exec "${container}" curl -fsS http://localhost:8081/oma-persisted-post/)"
 [[ "${page}" == *'OMA persisted post'* ]]
