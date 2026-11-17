@@ -1,0 +1,9 @@
+.git
+.github
+.env
+.env.*
+*.pem
+*.key
+__pycache__
+README.md
+smoke-test.sh
