@@ -13,7 +13,7 @@ docker build --platform linux/amd64 -t oma-runtime:test .
 bash smoke-test.sh oma-runtime:test
 ```
 
-The smoke test starts with an empty home volume, checks Hermes and WordPress, blocks access to `wp-config.php` and uploaded PHP, writes a post and a Hermes skill, then recreates the container against the same volume. It checks the post, skill, database value, credentials and permalink survived. It removes only its own temporary containers and volume.
+The smoke test starts with an empty home volume, checks Hermes and WordPress, blocks access to `wp-config.php` and uploaded PHP, writes a post and a Hermes skill, then recreates the container against the same volume. The second boot reproduces Agent37 VM output pipes owned by root before dropping to `node`; the output relay preserves non-root service logging. It checks the post, skill, database value, credentials and permalink survived. It removes only its own temporary containers and volume.
 
 Run locally with loopback-only bindings; the inherited terminal and file browser rely on Agent37's authenticated edge:
 

@@ -27,7 +27,7 @@ jobs:
         run: |
           bash -n entrypoint.sh mariadb.sh healthcheck.sh smoke-test.sh
           shellcheck entrypoint.sh mariadb.sh healthcheck.sh smoke-test.sh
-          python3 -m py_compile bootstrap.py
+          python3 -m py_compile bootstrap.py supervise.py
       - uses: docker/setup-buildx-action@v3
       - name: Build linux/amd64 image
         uses: docker/build-push-action@v6

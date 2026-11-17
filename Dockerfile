@@ -30,14 +30,14 @@ RUN curl -fsSL https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli
     && rm /tmp/wordpress.tar.gz \
     && mv /usr/local/bin/entrypoint.sh /opt/oma/hermes-entrypoint.sh
 
-COPY apache2.conf supervisord.conf bootstrap.py /opt/oma/
+COPY apache2.conf supervisord.conf bootstrap.py supervise.py /opt/oma/
 COPY --chmod=0755 entrypoint.sh mariadb.sh healthcheck.sh /opt/oma/
 
 # Leave the inherited ENTRYPOINT path intact and retain the upstream supervisor
 # as a child, alongside MariaDB and Apache; do not replace Hermes with WordPress.
 RUN ln -s /opt/oma/entrypoint.sh /usr/local/bin/entrypoint.sh \
     && printf 'memory_limit=128M\nexpose_php=Off\n' > /etc/php/8.2/apache2/conf.d/99-oma.ini \
-    && /usr/bin/python3 -m py_compile /opt/oma/bootstrap.py
+    && /usr/bin/python3 -m py_compile /opt/oma/bootstrap.py /opt/oma/supervise.py
 
 EXPOSE 8081
 HEALTHCHECK --interval=15s --timeout=10s --start-period=120s --retries=4 CMD ["/opt/oma/healthcheck.sh"]
